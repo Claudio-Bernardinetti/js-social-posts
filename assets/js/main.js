@@ -131,21 +131,54 @@ function postsSlides() {
                             <div class="likes js-likes">
                                 <div class="likes__cta">
                                     <a class="like-button  js-like-button" href="#"
-                                        data-postid="1">
+                                        data-postid="${post.id}">
                                         <i class="like-button__icon fas fa-thumbs-up"
                                             aria-hidden="true"></i>
                                         <span class="like-button__label">Mi Piace</span>
                                     </a>
                                 </div>
                                 <div class="likes__counter">
-                                    Piace a <b id="like-counter-1"
+                                    Piace a <b id="like-counter-${post.id}"
                                         class="js-likes-counter">${post.likes}</b> persone
                                 </div>
                             </div>
                         </div>
-                        </div>`
-                        // Stampa del degli ogetti nell'ordine di markup
-                        sliderPostsEl.insertAdjacentHTML('beforebegin', postsMarkup)
+                    </div>`
+        // Stampa del degli ogetti nell'ordine di markup
+        sliderPostsEl.insertAdjacentHTML('beforebegin', postsMarkup)
     }
 };
 postsSlides()
+
+// Seleziona tutti i pulsanti "Mi Piace"
+const likeButtons = document.querySelectorAll('.like-button');
+
+// Crea un array per memorizzare gli ID dei post ai quali l'utente ha messo il like
+const likedPosts = [];
+console.log(likedPosts);
+// Aggiungi un event listener a ciascun pulsante "Mi Piace"
+likeButtons.forEach(button => {
+    button.addEventListener('click', event => {
+        // Impedisci il comportamento predefinito del pulsante
+        event.preventDefault();
+
+        // Ottieni l'ID del post dal data attribute del pulsante
+        const postId = button.dataset.postid;
+
+        // Trova il post corrispondente nell'array dei post
+        const post = posts.find(post => post.id === parseInt(postId));
+
+        // Incrementa il contatore dei likes del post
+        post.likes++;
+
+        // Aggiungi l'ID del post all'array dei post ai quali l'utente ha messo il like
+        likedPosts.push(post.id);
+
+        // Aggiorna il contatore dei likes nella pagina
+        const likesCounter = document.querySelector(`#like-counter-${postId}`);
+        likesCounter.textContent = post.likes;
+
+        // Cambia il colore del testo del pulsante "Mi Piace"
+        button.classList.add('liked');
+    });
+});
